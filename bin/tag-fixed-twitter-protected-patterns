@@ -1,0 +1,15 @@
+<wall />	<wall />
+XML1	<\/?\S+\/?>
+XML2	<\S+( [a-zA-Z0-9]+\=\"?[^\"]\")+ ?\/?>
+XML3	<\S+( [a-zA-Z0-9]+\=\'?[^\']\')+ ?\/?>
+EMAIL	[\w\-\_\.]+\@([\w\-\_]+\.)+[a-zA-Z]{2,}
+URL1	([\(]*http[s]?|ftp):\/\/[^:\/\s]+(\/\w+)*[\w\-\.\/#]+
+TWITTER	@[a-zA-Z0-9_]{2,}
+URL2	(http[s]?|ftp):\/\/
+HASHTAG	#[\s]*[\p{Letter}\p{Number}_]{2,}
+HASHTAG	#[\s]*[\p{L}\p{N}\p{M}_]{2,}
+URL3	([\(]*http[s]?|ftp):\/[^:\/\s]+(\/\w+)*[\w\-\.\/#]+
+URL4	(http[s]?|ftp):\/
+URL5	(http[s]?|ftp):
+HASH	#
+RETWEET	^[Rr][Tt][:]*
