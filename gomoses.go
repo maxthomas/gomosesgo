@@ -17,7 +17,7 @@ var (
 	maxConns   = flag.Int("maxConns", 12, "Maximum number of simultaneous connections to allow")
 
 	// logging configuration
-	log = zap.NewJSON()
+	log = zap.New(zap.NewJSONEncoder())
 )
 
 func zapLogger() gin.HandlerFunc {
@@ -77,7 +77,7 @@ func main() {
 	if *verbose {
 		zapOptions = append(zapOptions, zap.DebugLevel)
 	}
-	log = zap.NewJSON(zapOptions...)
+	log = zap.New(zap.NewJSONEncoder(), zapOptions...)
 	mainLog := log.With(zap.String("module", "main"))
 
 	if *mosesURI == "" || *scriptPath == "" {
@@ -96,5 +96,6 @@ func main() {
 	mainLog.Info("Starting server")
 	rpc := RPCTranslate{client}
 	r := getGinEngine(&rpc, &tf, *maxConns, *debugMode)
+	mainLog.Info("Backend started")
 	r.Run(":8080") // listen and server on 0.0.0.0:8080
 }
