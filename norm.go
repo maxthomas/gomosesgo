@@ -108,7 +108,7 @@ type TranslationTransformer struct {
 // the path to supporting library executables
 func NewTranslationTransformer(libPath string) (TranslationTransformer, error) {
 	tf := TranslationTransformer{
-		PreprocessMethods:  []TransformCommand{TCTagString, TCTokenizeString, FilterTransformCommand{removeEmoji: true}},
+		PreprocessMethods:  []TransformCommand{FilterTransformCommand{removeEmoji: true}, TCTagString, TCTokenizeString},
 		PostprocessMethods: []TransformCommand{TCRejoinString, TCDetokenizeString, FilterTransformCommand{removeNewlines: true, collapseSpaces: true}}}
 	var err error
 	tf.LibPath, err = filepath.Abs(libPath)
