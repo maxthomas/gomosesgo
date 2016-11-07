@@ -49,6 +49,7 @@ func routeTranslate(c *gin.Context) {
 	}
 
 	finalSrc, err := tf.Postprocess(translatedSrc)
+	hashtags := getHashtags(finalSrc)
 	if err != nil {
 		c.Error(err)
 		c.Error(errors.New("Bad input: " + req.Text))
@@ -56,8 +57,9 @@ func routeTranslate(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{
-		"status":  "ok",
-		"version": "1.1.2pre",
-		"text":    finalSrc,
+		"status":   "ok",
+		"version":  "1.1.2pre",
+		"text":     finalSrc,
+		"hashtags": hashtags,
 	})
 }
