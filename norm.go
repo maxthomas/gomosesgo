@@ -43,7 +43,40 @@ var (
 
 	collapseSpaceRegex1 = regexp.MustCompile("\\s\\s+")
 	collapseSpaceRegex2 = regexp.MustCompile("\\s([\\',.])")
+	hashtagExtract      = regexp.MustCompile(`[^\S]|^#([^\s#.,!)]+)$`)
 )
+
+// tagsSplitter returns true if the current rune is a tag ending
+// Tags MUST end with whitespace, '.' ',' '!' or ')'
+func tagsSplitter(c rune) bool {
+	if unicode.IsSpace(c) {
+		return true
+	}
+	switch c {
+	case '.', ',', '!', ')':
+		return true
+	}
+	return false
+}
+
+// getTags matches tags and returns them as an array of strings
+//
+// The hashtag itself is NOT included as part of the tag string
+//
+// The function should match the javascript regex: '/([^\S]|^)#([^\s#.,!)]+)(?![^\s.,!)])/g'.
+// Since golang re2 engine does not have positive lookahead, the end of the tag is matched by splitting the input string.
+// The 'tagsSplitter' function defines the end of a tag, and the 'matchTags' regex has a requirement that it must match the end of a string.
+func getHashtags(s string) []string {
+	var res []string
+	fields := strings.FieldsFunc(s, tagsSplitter)
+	for _, v := range fields {
+		sub := hashtagExtract.FindStringSubmatch(v)
+		if len(sub) > 1 {
+			res = append(res, sub[1])
+		}
+	}
+	return res
+}
 
 // Execute the FTC command
 func (ftc FilterTransformCommand) Execute(in string, tf *TranslationTransformer) (string, error) {

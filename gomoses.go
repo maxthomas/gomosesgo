@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,7 @@ var (
 	verbose    = flag.Bool("verbose", false, "Turn on verbose logging")
 	debugMode  = flag.Bool("debug", false, "Run in debug mode")
 	maxConns   = flag.Int("maxConns", 12, "Maximum number of simultaneous connections to allow")
+	port       = flag.Int("port", 8080, "Default port to listen on")
 
 	// logging configuration
 	log = zap.New(zap.NewJSONEncoder())
@@ -96,6 +98,7 @@ func main() {
 	mainLog.Info("Starting server")
 	rpc := RPCTranslate{client}
 	r := getGinEngine(&rpc, &tf, *maxConns, *debugMode)
-	mainLog.Info("Backend started")
-	r.Run(":8080") // listen and server on 0.0.0.0:8080
+	portStr := strconv.Itoa(*port)
+	mainLog.Info("Backend started on port" + portStr)
+	r.Run(":" + portStr) // listen and server on 0.0.0.0:8080
 }
