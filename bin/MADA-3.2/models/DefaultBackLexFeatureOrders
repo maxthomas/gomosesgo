@@ -1,0 +1,14 @@
+asp	na	p	i	*	c
+cas	g	n	u	na	a
+enc0	3fs_poss	3ms_poss	1p_dobj	1p_poss	3mp_dobj	3fs_dobj	0	1s_dobj	mA_rel	mA_sub	2ms_pron	1s_poss	2ms_poss	ma_rel	1p_pron	3ms_pron	3d_poss	na	3ms_dobj	1s_pron	2fs_poss	2fs_pron	2ms_dobj	3mp_poss	lA_neg	ma_interrog
+gen	f	na	m
+mod	na	i	s	j	u
+num	s	na	p	d
+per	3	1	2	na
+pos	noun	adj	verb	conj_sub	prep	noun_quant	adv_interrog	pron_rel	adj_num	adj_comp	part_neg	abbrev	adv_rel	noun_num	part_det	conj	part_restrict	pron_interrog	verb_pseudo	noun_prop	pron	part	part_verb	interj	part_focus	adv	pron_dem	part_voc
+prc0	na	Al_det	0
+prc1	0	li_prep	ka_prep	bi_prep	la_rc	ta_prep	li_jus	bi_part	la_emph	la_prep	na	wa_prep
+prc2	wa_conj	fa_conj	0	fa_conn	wa_sub	fa_rc	fa_sub	na
+prc3	0	>a_ques	na
+stt	c	na	d	i
+vox	na	a	u	p

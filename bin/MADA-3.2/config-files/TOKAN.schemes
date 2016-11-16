@@ -1,0 +1,9 @@
+# TOKAN Schemes file.  Comment lines begin with '#'
+#
+#OUTPUT EXT     SCHEME USED
+#
+mass.atb.tok	SCHEME=ATB MARKNOANALYSIS SENT_ID
+mass.d3.tok	SCHEME=D3 MARKNOANALYSIS SENT_ID
+mass.diac.tok	SCHEME=DIAC SENT_ID
+mass.pos.tok	::SPLIT REST ::FORM0 POS:CATIB ::FORM1 POS:PENN ::FORM2 POS:BW SENT_ID
+mass.madap.tok  ::SPLIT REST ::FORM0 POS:MADA SENT_ID

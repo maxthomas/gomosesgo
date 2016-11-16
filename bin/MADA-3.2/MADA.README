@@ -1,0 +1,217 @@
+      MADA: Morphological Analysis and Disambiguation for Arabic
+	         Version 3.2 (February 2012)
+     
+      Includes TOKAN, a general tokenizer for Arabic, and ALMOR,
+      a lexeme-based morphological analyzer.
+
+LICENSE
+//////////////////////////////////////////////////////////////////////////////
+// MADA: Morphological Analysis and Disambiguation for Arabic
+// Copyright (c) 2005-2012 Columbia University in the 
+//               City of New York
+// 
+// TOKAN: A General Tokenizer for Arabic 
+// Copyright (c) 2005-2012 Columbia University in the 
+//               City of New York
+//
+// ALMOR: Arabic Lexeme-based Morphology analyzer
+// Copyright (c) 2009-2012 Columbia University in the City of New York
+//
+// Please do not distribute to anyone else without written permission
+// from authors.  If you know someone who can use this software, please 
+// direct them to http://www1.ccls.columbia.edu/~cadim/MADA, where they
+// may freely obtain the software.  Doing this helps us to understand how
+// our software is being used, and to make future improvements tailored to
+// the needs of users.
+//
+// MADA, TOKAN and ALMOR are distributed in the hope that they will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+//
+//
+// For more information, bug reports, fixes, contact:
+//    Nizar Habash, Owen Rambow and Ryan Roth
+//    Center for Computational Learning Systems
+//    Columbia University
+//    New York, NY 10115
+//    USA
+//    habash@cs.columbia.edu
+//    ryanr@ccls.columbia.edu
+/////////////////////////////////////////////////////////////////////////////
+
+
+* MADA (spelled in Buckwalter as madaY) is the Arabic word for
+"atmost/maximum point/degree".
+
+
+0. New in This Version
+----------------------
+
+For a list of version updates, see the file MADA.CHANGES.  Details of
+the program use and operation can be found in the included Manual PDF.
+
+
+1. Overview
+-----------
+
+This package contains a system for morphological tagging (disambiguation),
+diacritization, and tokenization of Modern Standard Arabic.  Details of
+this work are presented in:
+
+Habash, Nizar and Owen Rambow. Arabic Tokenization, Part-of-Speech
+Tagging and Morphological Disambiguation in One Fell Swoop. In
+Proceedings of the Conference of American Association for
+Computational Linguistics (ACL 05). Ann Arbor, Michigan. 2005.
+[http://acl.ldc.upenn.edu/P/P05/P05-1071.pdf]
+
+Details on the tokenization can be found here:
+
+Nizar Habash and Fatiha Sadat.  Arabic Preprocessing Schemes for
+Statistical Machine Translation.  In NAACL06.
+[http://acl.ldc.upenn.edu/N/N06/N06-2013.pdf]
+
+
+This release uses SVMTools version 1.3.1 for internal SVM classification 
+tasks. Unlike version 1.3, this new SVMTools is compatible with Perl
+5.10.  We strongly recommend you upgrade to SVMTools 1.3.1.
+
+
+
+This release contains several components:
+
+* A preprocessing component that can take raw UTF8 Arabic text and reduce it
+  a clean Buckwalter encoding with punctuation and number separation, as is 
+  required for input to MADA,
+
+* ALMOR, which analyzes the morphology of Arabic text,
+
+* The MADA proper, which associates a complete morphological tag with words 
+  in context.
+
+* TOKAN, the general tokenizer.
+
+There is a master script, MADA+TOKAN.pl. This script will call the 
+preprocessor, followed MADA (which utilizes ALMOR), followed by TOKAN. Any of 
+these three components can be turned off by setting variables in the 
+configuration file. The behavior of MADA and of TOKAN is governed by the 
+configuration file, whose name is passed as an argument to MADA+TOKAN.pl.  
+
+Each major version of MADA has created and expanded the variables listed in 
+the configuration file.  This means that configuration files used in previous 
+versions may not be compatible with this one. For this reason, users should 
+rebuild their configuration files after each major MADA update. We can provide 
+assistance in setting up your configuration if you are having difficulty.
+
+We recommend you inspect the generic.madaconfig or template.madaconfig files 
+(included with the release and built during installation, respectively) which 
+are fully-documented.  There are several options which may be of interest to 
+you and which you may want to manipulate.  
+
+
+
+2. File Overview
+----------------
+
+The contents of this directory are as follows:
+
+CCLS-12-01.pdf  The Current MADA+TOKAN Manual
+
+MADA.README	This file
+
+MADA.CHANGES	A list of the improvements made with each version of MADA
+
+documentation/  Directory containing a MADA.Licence.Agreement file 
+
+config-files/   Directory containing several example configuration files.
+
+eval-configs/   Directory containing configuration for use with 
+		MADA-evaluate.pl (not needed by most users).
+
+ALMOR/		Directory containing utilities for building an ALMOR
+		database file
+
+MADA/		Directory containing library modules for MADA
+
+models-atb3/    The SVM models for linguistic classifiers trained on Arabic 
+		Treebank Part 3 (ATB3), version 3.1. These models are 
+		compatibile with the conventions introduced by SAMA 3.1 
+		(formerly Buckwalter Arabic Morphological Analyzer (BAMA)).
+
+lexeme-diac-models/
+		Directory containing Ngram models of lexeme and diacritized 
+		word information; used by MADA during ranking.
+
+common-tasks/
+		A directory of short scripts that utilize the MADATools and 
+		MADAWord Perl libraries to manipulate data inside MADA output 
+		files (.mada files) to do useful things.  Examples include: 
+		extracting the original sentences from a .mada file, 
+		extracting specific feature values (such as POS) from each word
+		in a .mada file, extracting feature value statistics from 
+		a .mada file, etc. These scripts maintain documentation of 
+		their use and function at the beginning of each file.
+
+SAMPLE/		Directory containing examples of MADA and TOKAN output.
+		The INSTALL.pl script uses the files here to test the 
+		MADA installation.
+
+INSTALL.pl	A installation and configuration script.  This script
+		will verify the presence of required third-party
+		software, verify that the $PERL5LIB path environment
+		variable has been set correctly, will generate a
+		.madaconfig template tailored to the user's specific
+		systems, will generate an ALMOR database, and will
+		run a quick test of the overall system.  See below
+		for more details.
+
+
+MADA+TOKAN.pl   Super script for running MADA and/or TOKAN
+
+MADA-preprocess.pl
+		The preprocessing component that can take raw text
+		(one-sentence-per-line), clean it, add foreign word
+		tags, insert whitespace between punctuation and words,
+		and convert UTF8 to Buckwalter.
+
+MADA-SVMTOOLS.pl 
+		Main script that calls the four sub-scripts for MADA:
+
+		MADA-morphanalysis.pl		 creates the analyses from text
+		MADA-generate-SVM+ngram-files.pl converts analyses to machine 
+						 learning format; generates 
+						 Ngram lexeme information
+		MADA-runSVMTOOLS.pl	         classifies SVM features
+		MADA-selectMA-SVMTOOLS.pl	 ranks/combines classifiers 
+						 to select analysis
+
+MADA-evaluate.pl  Compares MADA output to a gold standard (not needed 
+		  for general use)
+
+TOKAN.pl	A generalized Tokenizer (read documentation of how to use it 
+		inside the file TOKAN.pl. This Tokenizer was used for 
+		generating the various preprocessing schemes in:
+
+		Habash, Nizar and Fatiha Sadat. Arabic Preprocessing for 
+		Statistical Machine Translation. In Procedings of NAACL06. 
+		New York. 2006.
+ 
+TOKAN-evaluate.pl  Compares TOKAN output for a particular scheme to a
+		   gold standard (not needed for general use).
+
+
+
+
+
+
+--------------------------------------------------------------------------
+
+For installation and running instructions, please see the included
+Manual PDF file: CCLS-12-01.pdf.
+
+
+
+NOTE: When citing MADA or TOKAN in your own publications, please be sure 
+to include the version number and what version of SAMA, BAMA or Aramorph 
+you used. This is important because different versions can produce 
+significantly different results, and therefore the version must be considered 
+when comparing to previous work.

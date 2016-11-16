@@ -1,0 +1,159 @@
+*** lm/src/ClassNgram.cc.dist	2010-06-01 23:22:48.000000000 -0700
+--- lm/src/ClassNgram.cc	2012-01-05 15:35:51.384833200 -0800
+***************
+*** 43,48 ****
+--- 43,59 ----
+  	   & hashMask(maxBits);
+  }
+  
++ static inline int
++ SArray_compareKey(const ClassNgramState &key1, const ClassNgramState &key2)
++ {
++    int c = SArray_compareKey(key1.classContext, key2.classContext);
++    if (c != 0) {
++ 	return c;
++    } else {
++ 	return SArray_compareKey(key1.classExpansion, key2.classExpansion);
++    }
++ }
++ 
+  static inline ClassNgramState
+  Map_copyKey(const ClassNgramState &key)
+  {
+*** lm/src/HiddenNgram.cc.dist	2010-06-01 23:19:09.000000000 -0700
+--- lm/src/HiddenNgram.cc	2012-01-05 14:12:13.254800100 -0800
+***************
+*** 20,25 ****
+--- 20,26 ----
+  #include "HiddenNgram.h"
+  #include "Trellis.cc"
+  #include "LHash.cc"
++ #include "SArray.cc"
+  #include "Array.cc"
+  
+  #define DEBUG_PRINT_WORD_PROBS          2	/* from LM.cc */
+***************
+*** 41,46 ****
+--- 42,63 ----
+  	   & hashMask(maxBits);
+  }
+  
++ static inline int
++ SArray_compareKey(const HiddenNgramState &key1, const HiddenNgramState &key2)
++ {
++     int c = SArray_compareKey(key1.context, key2.context);
++ 
++     if (c != 0) {
++ 	return c;
++     } else {
++ 	if (key1.event != key2.event) {
++ 	    return key1.event - key2.event;
++ 	} else {
++ 	    return key1.repeatFrom - key2.repeatFrom;
++ 	}
++     }
++ }
++ 
+  static inline HiddenNgramState
+  Map_copyKey(const HiddenNgramState &key)
+  {
+*** lm/src/Trellis.cc.dist	2010-06-01 22:49:58.000000000 -0700
+--- lm/src/Trellis.cc	2012-01-05 15:35:10.852780400 -0800
+***************
+*** 26,31 ****
+--- 26,32 ----
+  #include "Trellis.h"
+  
+  #include "LHash.cc"
++ #include "SArray.h"
+  
+  #define INSTANTIATE_TRELLIS(StateT) \
+      INSTANTIATE_LHASH(StateT,TrellisNode<StateT>); \
+***************
+*** 575,581 ****
+  
+      while (low+1 < high) {
+  	unsigned m = (high+low)/2;
+! 	if (nblist[m].score >= hyp.score) {
+  	    low = m;
+  	} else {
+  	    high = m;
+--- 576,584 ----
+  
+      while (low+1 < high) {
+  	unsigned m = (high+low)/2;
+! 	if (nblist[m].score > hyp.score ||
+! 	    (nblist[m].score == hyp.score && SArray_compareKey(nblist[m].prev, hyp.prev) > 0))
+! 	{
+  	    low = m;
+  	} else {
+  	    high = m;
+***************
+*** 587,593 ****
+       * where n is the correct insertion point, e.g., when inserting
+       * 2.5 in (...,3,2,...).
+       */
+!     while (low < numNbest && nblist[low].score >= hyp.score) {
+  	low ++;
+      }
+      return low;
+--- 590,599 ----
+       * where n is the correct insertion point, e.g., when inserting
+       * 2.5 in (...,3,2,...).
+       */
+!     while (low < numNbest &&
+! 	   (nblist[low].score > hyp.score ||
+! 	    (nblist[low].score == hyp.score && SArray_compareKey(nblist[low].prev, hyp.prev) > 0)))
+!     {
+  	low ++;
+      }
+      return low;
+*** lm/src/Vocab.h.dist	2011-11-20 12:03:02.000000000 -0800
+--- lm/src/Vocab.h	2012-01-05 15:47:48.765242900 -0800
+***************
+*** 291,296 ****
+--- 291,300 ----
+  {
+      unsigned i = 0;
+  
++     if (key == 0) {
++ 	return 0;
++     }
++ 
+      /*
+       * The rationale here is similar to LHash_hashKey(unsigned),
+       * except that we shift more to preserve more of the typical number of
+***************
+*** 327,332 ****
+--- 331,342 ----
+  static inline Boolean
+  LHash_equalKey(const VocabIndex *key1, const VocabIndex *key2)
+  {
++     if (key1 == 0) {
++         return (key2 == 0);
++     } else if (key2 == 0) {
++ 	return false;
++     }
++ 
+      unsigned i;
+      for (i = 0; key1[i] != Vocab_None && key2[i] != Vocab_None; i ++) {
+  	if (key1[i] != key2[i]) {
+***************
+*** 345,350 ****
+--- 355,370 ----
+  {
+      unsigned int i = 0;
+  
++     if (key1 == 0) {
++ 	if (key2 == 0) {
++ 	    return 0;
++ 	} else {
++ 	    return -1;
++ 	}
++     } else if (key2 == 0) {
++ 	return 1;
++     }
++ 
+      for (i = 0; ; i++) {
+  	if (key1[i] == Vocab_None) {
+  	    if (key2[i] == Vocab_None) {

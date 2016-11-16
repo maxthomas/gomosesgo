@@ -1,0 +1,301 @@
+<!DOCTYPE HTML>
+<html><head>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="robots" content="index,follow">
+<meta name="revisit-after" content="30 days">
+<meta name="keywords" content="MADA, TOKAN, Arabic, Morphology, Natural Language Processing, Diacritization, Tokenization, Lemmatization, POS tagging, Stemming, Habash, Roth, Rambow">
+<meta name="description" content="Configuration options for the current version of MADA+TOKAN">
+<title>MADA+TOKAN Configuration Options Page</title>
+<link rel="stylesheet" type="text/css" href="MADA_configuration_files/MADAstyle.css">
+</head><body>
+<h1>MADA + TOKAN</h1>
+
+<div id="navtop">Current Version: 3.2 <span class="alignright">Site Last Modified: February 2, 2012</span></div>
+
+  <div id="menucol">
+  <div id="navcol">
+    <ul>
+      <li class="none"><a href="http://www1.ccls.columbia.edu/MADA/index.html">Home</a></li>
+    </ul><br>
+    <h5>Software</h5>
+    <ul>
+      <li class="none"><a href="http://www1.ccls.columbia.edu/MADA/MADA_download.html">Download</a></li>
+      <li class="none"><a href="http://www1.ccls.columbia.edu/MADA/MADA_mailing_list.html">MADA Mailing List</a></li>
+      <li class="none"><a href="http://www1.ccls.columbia.edu/MADA/MADA_version_changes.html">Version Changes</a></li>
+      <li class="none"><a href="http://www1.ccls.columbia.edu/MADA/MADA_license.html">License Information</a></li>
+    </ul><br>
+    <h5>Documentation</h5>
+    <ul>
+      <li class="none"><a href="http://www1.ccls.columbia.edu/MADA/MADA_manual.html">User Manual</a></li>
+      <li class="none"><a href="http://www1.ccls.columbia.edu/MADA/MADA_configuration.html">Configuration Options</a></li>
+      <li class="none"><a href="http://www1.ccls.columbia.edu/MADA/MADA_examples.html">Examples of Use</a></li>
+      <li class="none"><a href="http://www1.ccls.columbia.edu/MADA/MADA_glossary.html">Glossary of Terms</a></li>
+      <li class="none"><a href="http://www1.ccls.columbia.edu/MADA/MADA_FAQ.html">MADA+TOKAN FAQ</a></li>
+    </ul><br>
+    <h5>Publications</h5>
+    <ul>
+      <li class="none"><a href="http://www1.ccls.columbia.edu/MADA/MADA_publications.html">Papers and References</a></li>
+  <!--    <li class="none"><a href="MADA_other_projects.html">Projects Using MADA</a></li> -->
+    </ul><br>
+    <h5>Contact</h5>
+    <ul>
+      <li class="none"><a href="http://www1.ccls.columbia.edu/MADA/MADA_about_us.html">About Us</a></li>
+      <li class="none"><a href="http://www1.ccls.columbia.edu/MADA/MADA_contact.html">Contact Us</a></li>
+      <li class="none"><a href="http://www1.ccls.columbia.edu/MADA/MADA_mailing_list.html">Getting Email Updates</a></li>
+    </ul>
+  </div>
+  </div>
+
+
+<div id="bodycol">
+  <div class="section">
+    <p>
+    MADA+TOKAN is controlled by means of several configuration
+    variables that can be defined in a configuration file, or
+    provided on the command line.  When MADA is installed,
+    it creates a default configuration file in the MADA home
+    directory, under "<em>config-files/template.madaconfig</em>".  This
+    file lists every configuration variable that MADA and TOKAN
+    use, and provides documentation for each.  This documentation
+    is also presented below, divided into categories.</p>
+
+    <p>MADA configuration files are formatted so that only one
+    variable (at most) is defined on each line, using a </p>
+
+    <ul><strong>Variable Name</strong> = <strong>Variable Value</strong></ul>
+
+    <p>format (see the default <em>template.madaconfig</em> file for
+    examples). Blank lines are ignored, and anything appearing after a
+    "#" character is ignored as a comment. By convention, variable
+    names are all upper-case; for the most part, variable values are
+    case-insensitive.</p>
+
+    <h2>Mandatory Directory Settings</h2>
+    <p>The following settings are used to specify the location of the
+    MADA home directory and the third-party tools MADA uses.  If the
+    MADA INSTALL.pl installation script was run correctly, the
+    <em>template.madaconfig</em> file it created should already have
+    these variables set properly.  Otherwise, users will have to
+    manually set them to the proper locations on their systems before
+    running MADA.</p>
+
+    <table class="bodyTable"><tbody><tr class="a">
+      <th>Mandatory Variable</th><th>Possible Values</th>
+      <th>Default Value</th><th>Description</th></tr>
+      <tr class="b"><td><strong>MADA_HOME</strong></td><td>Any valid directory</td>
+      <td>Defined by INSTALL.pl</td><td>The full-path directory location of the
+      MADA installation</td></tr>
+      <tr class="b"><td><strong>SRI_NGRAM_TOOL</strong></td><td>The "<em>disambig</em>"
+      executable file</td>
+      <td>Defined by INSTALL.pl</td><td>The full-path location of the
+      SRILM "<em>disambig</em>" tool</td></tr>
+      <tr class="b"><td><strong>SVM_TAGGER</strong></td><td>The "<em>SVMTagger</em>"
+      executable file</td>
+      <td>Defined by INSTALL.pl</td><td>The full-path location of the
+      SVMTool "<em>SVMTagger</em>" tool</td></tr>   
+    </tbody></table>
+ 
+
+    <h2>General Use Settings</h2>
+    <p>These settings are used for general control of MADA and TOKAN;
+    most users will only ever use these variables to adjust MADA and
+    TOKAN to their needs.
+    </p>
+
+    <h3>Control Variables</h3>
+    <table class="bodyTable"><tbody><tr class="a">
+      <th>Control Variable</th><th>Possible Values</th>
+      <th>Default Value</th><th>Description</th></tr>
+      <tr class="b"><td><strong>RUN_PREPROCESSOR</strong></td><td>YES
+    | NO</td>
+      <td>YES</td><td>Should the MADA Preprocessor be run?</td></tr>
+      <tr class="b"><td><strong>RUN_MADA</strong></td><td>YES | NO</td>
+      <td>YES</td><td>Should MADA be run?</td></tr>
+      <tr class="b"><td><strong>RUN_TOKAN</strong></td><td>YES | NO</td>
+      <td>NO</td><td>Should TOKAN be run?</td></tr>   
+    </tbody></table>
+
+    <h3>Input Format Variables</h3>
+    <table class="bodyTable"><tbody><tr class="a">
+      <th>Input Variable</th><th>Possible Values</th>
+      <th>Default Value</th><th>Description</th></tr>
+      <tr class="b"><td><strong>INPUT_ENCODING</strong></td><td>Buckwalter |
+    BW | UTF8 | UTF-8</td>
+      <td>UTF8</td><td>Is the input file encoded as Buckwalter (BW) or
+    UTF-8 (UTF8)? If UTF-8, the MADA Preprocessor will need to be run
+    to convert the data, as MADA needs to use Buckwalter encoding internally.</td></tr>
+      <tr class="b"><td><strong>SEPARATEPUNCT</strong></td><td>YES | NO</td>
+      <td>YES</td><td>If YES, MADA try to separate words from
+    surrounding punctuation and digits, a necessary step for good performance. This will also break up
+    sequences of punctuation and common number formats, but MADA will avoid breaking numbers
+    with decimal points. If NO, users are encouraged to preprocess
+    their input files to separate digits/puncutation.</td></tr>
+      <tr class="b"><td><strong>SENTENCE_IDS</strong></td><td>YES | NO</td>
+      <td>NO</td><td>If YES, MADA+TOKAN will treat the first word of
+    every input line as a sentence ID token, which will not be
+    processed and will be carried foward throughout the pipeline. The
+    sentence IDs can be any sequence of non-whitespace characters, but
+    if used, one must be present on every line of the input.</td></tr>   
+    </tbody></table>
+
+    <h3>Output Format Variables</h3>
+    <table class="bodyTable"><tbody><tr class="a">
+      <th>Output Variable</th><th>Possible Values</th>
+      <th>Default Value</th><th>Description</th></tr>
+      <tr class="b"><td><strong>SORT_COMBINER_OUTPUT</strong></td><td>YES
+    | NO</td>
+      <td>YES</td><td>If YES, the final MADA analysis lists will be
+    sorted according to their ranking score.  If NO, the lists will be
+    in the order produced by the morphological analyzer.</td></tr>
+      <tr class="b"><td><strong>PRINT_ANALYSES</strong></td><td>all |
+    stars | [number]</td>
+      <td>all</td><td>If all, the MADA output will list all the
+    generated analyses for each word.  If stars, the output will list
+    only the top-ranked analysis for each word (significantly reducing
+    the output file size). If [number], the MADA output will list the
+    analyses that have the [number] top-scores for each word.</td></tr>
+    </tbody></table>
+
+    <h3>Combiner / Selection Variables</h3>
+    <table class="bodyTable"><tbody><tr class="a">
+      <th>Combiner / Selection Variable</th><th>Possible Values</th>
+      <th>Default Value</th><th>Description</th></tr>
+      <tr class="b"><td><strong>FEATURE_WEIGHT_SET</strong></td><td>normal |
+    original | pos | lexeme | custom</td>
+      <td>normal</td><td>Which pre-calcuated feature weight set should
+    be used? The <em>normal</em> weightset is tuned for the best overall
+    analysis choice.  The <em>original</em> weightset equally weights all SVM
+    features. The <em>pos</em> and <em>lexeme</em> weightsets are tuned to provide the
+    best choices for part-of-speech and lemma selection,
+    respectively. Finally, it is possible for users to define their
+    own feature weightsets by selecting <em>custom</em> and then
+    pointing to the feature weight file with
+    CUSTOM_FEATURE_WEIGHT_FILE (below).</td></tr>
+      <tr class="b"><td><strong>CUSTOM_FEATURE_WEIGHT_FILE</strong></td>
+    <td>A file containing user-defined feature weights</td>
+      <td>Same as <em>normal</em></td><td>If FEATURE_WEIGHT_SET is set
+    to <em>custom</em>, this variable needs to be set to the
+    user-defined feature weightset file.  The format of this file
+    should be consistent with the files found in "<em>MADA_HOME/feature-weights</em>"</td></tr>
+      <tr class="b"><td><strong>TIE_BREAKING</strong></td><td>arbitrary |
+    random | none</td>
+      <td>arbitrary</td><td>When two or more analyses have tie
+    scores, what should be done? If arbitrary, the top analysis in the
+    list will be selected, and the others will be marked with a
+    "^". If random, one of the tied analyses will be randomly
+    selected, and the others will be marked with "^". If none, all
+    tied analyses will be selected (marked with "*" in the output file).</td></tr>   
+    </tbody></table>
+
+    <h3>TOKAN Variables</h3>
+    <table class="bodyTable"><tbody><tr class="a">
+      <th>TOKAN Variable</th><th>Possible Values</th>
+      <th>Default Value</th><th>Description</th></tr>
+      <tr class="b"><td><strong>TOKAN_SCHEME</strong></td>
+      <td>A highly customizable option string</td>
+      <td>NA</td><td>This variable allows highly customized
+    tokenizations to be defined. A full description of possible
+    options can be found in
+    the <a href="http://www1.ccls.columbia.edu/MADA/CCLS-10-01.pdf">MADA+TOKAN manual</a>.</td></tr>
+      <tr class="b"><td><strong>TOKAN_OUTPUT_EXTENSION</strong></td><td>a
+    string suitble for filenames</td>
+      <td>tok</td><td>This string will be used as a filename extension
+    of the TOKAN output file</td></tr>
+      <tr class="b"><td><strong>TOKAN_SCHEMES_FILE</strong></td><td>A
+    file containing a set of TOKAN schems</td>
+      <td>NA</td><td>If set to a properly formated file (see
+    "<em>MADA_HOME/config_files/TOKAN.schemes</em>" for an example),
+    TOKAN will produce an output file for every scheme listed in this
+    file, each using an output file extension specified in the schemes file.</td></tr>   
+    </tbody></table>
+
+    <h3>Cleanup Variables</h3>
+    <table class="bodyTable"><tbody><tr class="a">
+      <th>Cleanup Variable</th><th>Possible Values</th>
+      <th>Default Value</th><th>Description</th></tr>
+      <tr class="b"><td><strong>REMOVE_TEMP_NGRAM_FILES</strong></td><td>YES
+    | NO</td>
+      <td>YES</td><td>If YES, the temporary diacritic and lemma N-gram
+    files MADA generates will be automatically deleted.</td></tr>
+      <tr class="b"><td><strong>REMOVE_BACKLEX_FILES</strong></td><td>YES | NO</td>
+      <td>YES</td><td>If YES, MADA will automatically delete the
+    backup lexicon files it generates after SVMTools is finished with them.</td></tr>
+      <tr class="b"><td><strong>RUN_MA_FILE</strong></td><td>YES | NO</td>
+      <td>NO</td><td>If YES, MADA will automatically delete the
+    initial morphological analyzer file, the SVMTools output files,
+    and the N-gram summary file it generated once the final output
+    file is generated.</td></tr>
+    <tr class="b"><td><strong>COMPRESS_OUTPUTS</strong></td><td>YES | NO</td>
+    <td>NO</td><td>If YES, MADA will automatically compress (gzip) any
+    output files it has produced (including temporary files if they
+    were not automatically deleted).</td></tr>
+    </tbody></table>
+    
+    <p></p>
+    <h2>Advanced Settings</h2>
+    <p>In addition to the above variables, MADA configuration files contain
+    a few additional settings that control the exact models and features used
+    by MADA.  Since currently MADA is only released with a single set of models,
+    most users will never have a need to adjust these variables. <strong>It is
+    recommended that users do not alter any of these variables from their default values.</strong></p>
+
+    <table class="bodyTable"><tbody><tr class="a">
+      <th>Advanced Variable</th><th>Possible Values</th>
+      <th>Default Value</th><th>Description</th></tr>
+      <tr class="b"><td><strong>ALMOR_DATABASE</strong></td><td>An ALMOR database file</td>
+      <td>almor.db</td><td>The ALMOR database file to be used for morphological analysis.  It is assumed to be located under "<em>MADA_HOME/MADA/</em>."  Users should never have to alter this.</td></tr>
+      <tr class="b"><td><strong>MORPH_BACKOFF</strong></td><td>none | noan-all | noan-prop | add-all | add-prop</td>
+      <td>none</td><td>This variable controls whether the morphological 
+analyzer will create additional "backoff" analyses that may be useful in
+ identifying rare words, but are not as accurate as regular analyses.  
+See the default "<em>generic.madaconfig</em>" file for more details.</td></tr>
+      <tr class="b"><td><strong>NGRAM_LM_DIRECTORY</strong></td><td>A subdirectory under "<em>MADA_HOME</em>"</td>
+      <td>models/</td><td>This is the subdirectory containing the N-gram models used in MADA.  Users should never have to change this.</td></tr>
+    <tr class="b"><td><strong>LEXEME_TYPE</strong></td><td>BAMA | NORM</td>
+    <td>NORM</td><td>This controls whether the lexemes modeled in MADA 
+utilize the numeric underscore suffixes used in the BAMA/SAMA database 
+files (BAMA) or drops them (NORM).  Users should never have to change 
+this.</td></tr>
+    <tr class="b"><td><strong>LEX_NGRAM_ORDER</strong></td><td>1 | 2 | 3 | 4 | 5</td>
+    <td>4</td><td>This is the order of the lexeme N-gram models used by 
+MADA.  Tests have shown 4-grams to have a good balance between accuracy 
+and computation time, so that is the default.  Users should never have 
+to change this.</td></tr>
+    <tr class="b"><td><strong>DIAC_NGRAM_ORDER</strong></td><td>1 | 2 | 3 | 4 | 5</td>
+    <td>5</td><td>This is the order of the diacritic form N-gram models 
+used by MADA.  Tests have shown 5-grams to have a good balance between 
+accuracy and computation time, so that is the default.  Users should 
+never have to change this.</td></tr>
+    <tr class="b"><td><strong>CLASSIFIERS</strong></td><td>A subset of 14 specific classifier names</td>
+    <td>All 14 classifiers</td><td>This is the list of classifiers for 
+which MADA will run SVMs.  Only these classifiers will be used to make 
+predictions of the correct analysis.  Note that if a given classifier is
+ excluded, MADA will still generate a prediction for it since that 
+information comes from the chosen analysis.  Note also that if this 
+variable is changed from the default, the feature weights used will no 
+longer be optimized, which will likely result in poorer performance (but
+ faster processing speed, since fewer SVMs will be run).</td></tr>
+   <tr class="b"><td><strong>OTHER_FEATURES</strong></td><td>A subset of the 10 non-SVM features</td>
+    <td>All 10 features</td><td>This is the list of non-SVM features 
+that MADA will use in determining the best analysis. Note also that if 
+this variable is changed from the default, the feature weights used will
+ no longer be optimized.  Users are recommended to use the default 
+(full) list.</td></tr>
+       <tr class="b"><td><strong>MODEL_DIR</strong></td><td>A subdirectory under "<em>MADA_HOME</em>"</td>
+      <td>models/</td><td>This is the subdirectory containing the SVMTools model files used by MADA. Users should never have to change this.</td></tr>
+
+  </tbody></table>
+    
+
+    
+<p id="footer">Copyright © Columbia University in the City of New York. Developed by Nizar Habash, Owen Rambow and Ryan Roth.</p>
+
+
+
+  </div>
+</div>
+    
+
+</body></html>
