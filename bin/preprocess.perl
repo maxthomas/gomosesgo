@@ -21,7 +21,7 @@ my @protected_labels = (
     "URL2",
     "HASHTAG",
     "HASHTAG",
-#    "URL3",
+    "URL3",
 #    "URL4",
 #    "URL5",
     "HASH",
