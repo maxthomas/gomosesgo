@@ -32,10 +32,14 @@ type FilterTransformCommand struct {
 }
 
 var (
+	//Combination preprocessor (new for 2.0)
+	TCPreprocess = ExecTransformCommand{Command: "perl", Args: []string{"preprocess.perl"}, AppendPathToFirstArg: true}
+
 	// TCTagString runs the external string tagger
-	TCTagString = ExecTransformCommand{Command: "perl", Args: []string{"pretag-twitter-zone.perl", "-b", "-protected", "bin/tag-fixed-twitter-protected-patterns"}, AppendPathToFirstArg: true}
+	//TCTagString = ExecTransformCommand{Command: "perl", Args: []string{"pretag-twitter-zone.perl", "-b", "-protected", "bin/tag-fixed-twitter-protected-patterns"}, AppendPathToFirstArg: true}
 	// TCTokenizeString runs the external tokenizer
-	TCTokenizeString = ExecTransformCommand{Command: "perl", Args: []string{"moses_proc_zone.perl"}, AppendPathToFirstArg: true}
+	//TCTokenizeString = ExecTransformCommand{Command: "perl", Args: []string{"moses_proc_zone.perl"}, AppendPathToFirstArg: true}
+
 	// TCRejoinString runs the external hashtag rejoiner
 	TCRejoinString = ExecTransformCommand{Command: "perl", Args: []string{"rejoin-hashtags.perl"}, AppendPathToFirstArg: true}
 	// TCDetokenizeString runs the external detokenizer
@@ -43,6 +47,7 @@ var (
 
 	collapseSpaceRegex1 = regexp.MustCompile("\\s\\s+")
 	collapseSpaceRegex2 = regexp.MustCompile("\\s([\\',.])")
+
 	hashtagExtract      = regexp.MustCompile(`[^\S]|^#([^\s#.,!)]+)$`)
 )
 
@@ -141,7 +146,8 @@ type TranslationTransformer struct {
 // the path to supporting library executables
 func NewTranslationTransformer(libPath string) (TranslationTransformer, error) {
 	tf := TranslationTransformer{
-		PreprocessMethods:  []TransformCommand{FilterTransformCommand{removeEmoji: true}, TCTagString, TCTokenizeString},
+		//PreprocessMethods:  []TransformCommand{FilterTransformCommand{removeEmoji: true}, TCTagString, TCTokenizeString},
+		PreprocessMethods:  []TransformCommand{FilterTransformCommand{removeEmoji: true}, TCPreprocess},
 		PostprocessMethods: []TransformCommand{TCRejoinString, TCDetokenizeString, FilterTransformCommand{removeNewlines: true, collapseSpaces: true}}}
 	var err error
 	tf.LibPath, err = filepath.Abs(libPath)
