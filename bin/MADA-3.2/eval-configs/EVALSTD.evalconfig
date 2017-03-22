@@ -1,0 +1,59 @@
+#######################
+#  EVALUATION OPTIONS #
+#######################
+
+
+# Which thing to evaluate on? Select any combination of the following. Each of these
+#   must match exactly for two compared analyses to 'match'.
+#
+#  isstar   = The entire analysis line (excluding scores) must match.  This option overrides all others.
+#
+#  diac     = The diacs must match exactly
+#  partdiac = The diacs must match after having their trailing diacritics stripped
+#  lex      = The lexemes must match
+#  normlex  = The lexemes, after dropping the _## suffixes, must match
+#  gloss    = The glosses must match
+#
+#  pos      = The parts-of-speech must match
+#  cas      = The cases must match
+#  num      = The num features must match
+#  gen      = The gen features must match
+#  asp      = The aspect features must match
+#  mod      = The mood features must match
+#  vox      = The voice features must match
+#  per      = The per features must match
+#  enc0     = The endclitic 0 features must match (0 | na | 1p | 1s | 2d | 2fp | 2fs | 2mp | 2ms | 3d | 3fp | 3fs | 3mp | 
+#                                                  3ms | Ah | ma_interrog | mA_interrog | man_interrog | man_rel | 
+#                                                  ma_rel | mA_rel | ma_sub | mA_sub | lA_neg)
+#  prc0     = The proclitic 0 features must match (0 | na | Al | lA_neg | mA_neg | mA_rel | mA_part)
+#  prc1     = The proclitic 1 features must match (0 | na | bi_part | bi_prep | ka_prep | la_emph | la_prep | la_rc | 
+#                                                  li_jus | li_prep | sa_fut | ta_prep |  
+#                                                  wa_part | wa_prep | fy_prep | lA_neg | mA_neg | yA | wA | hA)
+#  prc2     = The proclitic 2 features must match (0 | na | fa_conj | fa_conn | fa_rc | fa_sub | wa_conj | wa_part | wa_sub)
+#  prc3     = The proclitic 3 features must match (0 | na | A)
+#  rat      = The rationality features must match
+#  stt      = The state features must match
+#
+#
+
+
+##  Corresponds to : (art aspect clitic conj gen num part per pos voice) in MADA 2.32
+EVALUATION_FEATURES = pos num gen asp vox per enc0 prc0 prc1 prc2 
+
+
+
+
+
+# Should the new feature tag sets be reduced to the old (version 2.32 and earlier) MADA feature tag 
+#  sets before comparing and evaluating?  For example, mapping prc2 values to the old conj values (YES,NO, NA).
+#
+# Valid choices = YES | NO
+
+MAP_TAGS = NO
+
+# Should the evaluation report include a list of all the errors found? If not, only global accuracy statistics will
+# be output.
+# Valid choices = YES | NO
+PRINT_ERRORS = NO
+
+

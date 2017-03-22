@@ -1,0 +1,554 @@
+This file documents the changes that have been made to MADA and TOKAN
+for each version.
+
+The following are differences in MADA 3.2 as compared to MADA 3.1:
+
+*  Options have been added to the TOKAN_SCHEME, which allow user to 
+   have TOKAN's output displayed in Buckwalter, UTF-8 or Safe Buckwalter
+   (a version of Buckwalter which transliterates Arabic script only to
+   ASCII letters, no punctuation symbols ).  If using an existing 
+   SCHEME alias, the encoding of all the output forms can be changed 
+   using the  new ENCODEALL:[BW|SAFEBW|UTF8] variable.  For example:
+  
+   TOKAN_SCHEME = SCHEME=ATB ENCODEALL:UTF8
+   TOKAN_SCHEME = SCHEME=ATB4MT ENCODEALL:SAFEBW
+
+   When altering the encoding this way, only the WORD, LEXEME, STEM,
+   or SURF forms are affected; POS and GLOSS forms are unaffected.
+
+   In addition, individual FORMs can be given different encodings.  
+   For example, the following will (for an ATB tokenization) produce 
+   each of the three encodings:
+
+   TOKAN_SCHEME = ::SPLIT QUES CONJ PART NART REST PRON ::FORM0 WORD \\
+    		  PROCMARK:PLUS ENCMARK::PLUS ::FORM1 COPY0 \\
+		  ENCODE:SAFEBW ::FORM2 COPY0 ENCODE:UTF8
+
+   If ENCODEALL is present, it overrides all the ENCODE options present
+   in the scheme.
+
+*  As an alternative to using SAMA when installing MADA, users can now
+   make use of the freely available Aramorph 1.2.1.  Aramorph is 
+   essentially a free version of BAMA 1.2.1 (one of SAMA's predecessors).
+   See the included manual for installation details.  Note that a MADA
+   build using Aramorph will be less accurate than a SAMA build, since
+   Aramorph is not annotated with the same amount of information as 
+   SAMA.  In our tokenization tests, an Aramorph MADA build reproduced
+   the same tokenization as a SAMA MADA build for 99.4% of the words
+   tested.
+
+*  As a convenience feature, MADA+TOKAN.pl can now accept an additional
+   command line argument (outputdir=<a directory location>), by which 
+   users can specify where all the output files MADA and TOKAN produce 
+   should be built  If this  option is not specified, the default is 
+   to place all output files in the same directory as the input file. 
+
+*  The format of output MADA files has been altered slightly; for clarity,
+   the ;;MADA line (which lists the values predicted by the SVMs) has been 
+   renamed to begin with ";;SVM_PREDICTIONS: " instead of ";;MADA: ". The 
+   other contents of the line are unchanged.
+
+*  Added a 'quiet mode' that will silence warnings and information messages
+   written to STDERR by MADA+TOKAN.  Error messages are not silenced.  Quiet
+   mode is activated by including 'quiet' on the command line.
+
+*  Added a simple GLOSS mode to TOKAN, which allows the English glossary term
+   for the input words to be output as part of a TOKAN scheme.
+
+*  Added library support for conversions between Buckwalter and UTF-8 
+   to/from Safe Buckwalter (SafeBW).
+
+*  Added a "normlat" option of the support script extractFeatureIntoSentenceFormat.pl
+   that will reduce @@LAT@@ tagged words to a simple placeholder (@@LAT@@).
+
+*  Added a "sentid" option to the support scripts 
+   extractFeatureIntoSentenceFormat.pl and extractFeaturesIntoColumns.pl that 
+   will cause sentence ids to be printed in the output (if present in MADA 
+   file).  Comments in this output are now preceeded by "##".
+
+*  Added a TOKAN-evaluate.pl script to allow simple comparisions of TOKAN output
+   to a gold tokenization file.  Most users will not have a need for this script;
+   it is mainly used for debugging and testing.
+
+*  Fixed a bug wherein a blank line in the input file would be given an
+   incorrect sentence ID in the TOKAN output file if sentence IDs are to be
+   added in the output.
+
+*  Fixed a bug in TOKAN where forms that use POS:PENN or POS:CATIB would give inaccurate
+   tags if a non-ATB tokenization scheme is used. For example, when using a scheme
+   that does not tokenize enclitics, for some words the POS:PENN tag for the word
+   would be the tag of the enclitic only, rather than the stem word or combination.
+   This has been fixed -- now the tags for both the stem and any non-tokenized
+   clitics are all reported, separated by "+" characters.  Since the POS:PENN tag
+   set was designed for the ATB tokenization specifically, for other tokenizations
+   the tags can be undefined for some words -- this is why we report all the 
+   component tags so all relevant information is presented.
+
+*  Fixed a bug in TOKAN that would cause extraneous "(nll)" to be printed 
+   with some verb forms if the STEM base was used in the TOKAN_SCHEME.
+
+*  Fixed a bug wherein words marked as @@LAT@@ by MADA would only have a
+   single word form output by TOKAN, regardless of how many forms were specified
+   in the TOKAN_SCHEME.  Now, @@LAT@@ words will have the same number of 
+   forms as other words.  All part-of-speech forms will assume @@LAT@@ words
+   are nouns (such tags will have a @@ prefix and suffix to make them stand
+   out); the other forms will simply produce the @@LAT@@ word with the
+   @@LAT@@ prefix.  Note that if the TOKAN_SCHEME does not pass @@ words, @@LAT@@
+   words will not appear in the TOKAN output.
+
+*  Fixed a bug that would cause the sentence ids of blank lines to be
+   reported incorrectly in TOKAN.
+
+*  Fixed a bug in TOKAN that would incorrectly identify the CATiB
+   or Penn POS tag of numeric comma characters.
+
+*  Minor library adjustments were made to improve consistency and maintainability.
+
+
+
+
+The following are differences in MADA 3.1 as compared to MADA 3.0.1:
+
+*  New models have been trained for the SVM and Ngram features within
+   MADA.  These models were trained from a larger data set (consisting
+   of the original MADA training set -- ATB3-train -- plus all of ATB1
+   and ATB2).  The new training data has roughly twice the number of
+   words, and has significantly improved the analysis prediction
+   accuracy.
+
+*  A significant flaw was discovered in the SVM models released with MADA 3.0.
+   The flaw was causing the SVM predictions to be sub-optimal.  This
+   flaw has been corrected. Together with the larger training data
+   set above, these improvments result in nearly a 30% reduction of 
+   analysis choice error over MADA-3.0.1.
+
+*  Now, if the configuration variable SENTENCE_IDS is set to YES, the
+   TOKAN scheme variable SENT_ID will be automatically added to the
+   scheme(s) used with TOKAN.  This will ensure that sentence ids input to 
+   MADA+TOKAN.pl will be carried through the entire process.
+
+*  Minor, very rare bugs in TOKAN have been repaired.
+
+*  If a user's SVMTools software is not installed or configured correctly,
+   MADA's SVM classifiers will produce faulty output.  In this version,
+   MADA will automatically detect if this is the case and exit with
+   a fatal error message.
+
+*  The subdirectories holding the SVM classifier models and the N-gram
+   model files have been merged into one subdirectory, 'models'. In user
+   configuration files, the variables NGRAM_LM_DIRECTORY and MODEL_DIR
+   should both point to 'models'.
+
+*  MADA-evaluate.pl has a new setting which allows users to quite the 
+   printing of errors it finds.  Most users will still never have a 
+   need to use MADA-evaluate.pl, however.
+
+*  A few typographical corrections were made to the MADA+TOKAN manual .pdf.
+   Most significantly, Table 4 was rebuilt to show the full enc0 tag set.
+
+*  We have shifted to a digital system for distributing MADA+TOKAN and
+   its future updates. It is no longer necessary to email or fax in
+   a signed license agreement prior to downloading the software.  As part
+   of this change, the software license agreement (which is agreed to
+   digitally prior to the software download) has been reworded for 
+   clarity and precision.
+
+
+
+The following are differences in MADA 3.0.1 as compared to MADA 3.0:
+
+*  To correct possible ambiguities in the TOKAN_SCHEME configuration variable,
+   the code has been altered so that TOKAN_SCHEME never contains a legal "#"
+   character.  The TOKAN_SCHEME variable "#SPLIT" is now replaced with
+   "::SPLIT", and the variables beginning with "#FORM" are replaced with
+   "::FORM".
+ 
+   In addition, the following TOKAN aliases have been changed:
+
+   SCHEME=ATB#       becomes SCHEME=ATB-HASH
+   SCHEME=TB#        becomes SCHEME=TB-HASH
+   SCHEME=ATB#+POS   becomes SCHEME=ATB-HASH+POS
+   SCHEME=D1#        becomes SCHEME=D1-HASH
+   SCHEME=D2#        becomes SCHEME=D2-HASH
+   SCHEME=D3#        becomes SCHEME=D3-HASH
+   SCHEME=S1#        becomes SCHEME=S1-HASH
+   SCHEME=S2#  	     becomes SCHEME=S2-HASH
+
+   Prior to this change, it was impossible for variables containing "#" characters
+   to be read properly from a .madaconfig file.
+
+   After installing this patch, users should examine their .madaconfig and
+   TOKAN scheme files to insure that TOKAN_SCHEME and the other variables 
+   never contain a "#" character.  In these files, the "#" is reserved to
+   designate a comment.
+
+   The MADA+TOKAN manual has been updated to reflect these changes.
+
+The following are differences in MADA 3.0 as compared to MADA 2.32:
+
+*  A new version of SVMTools (version 1.3.1) has been released that corrects
+   the compatibility issue with Perl 5.10.0.  We strongly recommend that
+   all MADA users update their SVMTools installation to version 1.3.1, since
+   this will allow them use MADA with any Perl version 5.8 or higher.
+
+   With this correction, the MADA configuration variable PERL_EXECUTABLE is
+   no longer necessary and has been removed. It will be ignored if included
+   in any configuration file.
+
+   If users do not upgrade and keep SVMTools 1.3, MADA can still be used,
+   but it will then be the user's responsibility to ensure that their
+   default perl version is 5.8.8.
+
+*  Added a new preprocessor script (MADA-preprocess.pl) which, when
+   run, will convert raw UTF-8 text to Buckwalter, after first cleaning
+   the UTF-8, tagging latin words, and separating/tokenizing punctuation
+   and numbers.  This will allow users to give MADA+TOKAN raw UTF-8
+   files without having to convert them to Buckwalter themselves. A new
+   configuration variable, RUN_PREPROCESSOR, has been added to control 
+   whether or not to use this preprocessor. In addition, the preprocessor 
+   can be further controlled so that a user can specify if the input 
+   is in UTF8 or Buckwalter encoding (using the variable 
+   INPUT_ENCODING); UTF8 is assumed by default.  Users can also 
+   specify if whitespace should be inserted between punctuation/numbers 
+   and other text (SEPARATEPUNCT).  In this way, users can instruct MADA
+   to separate punctuation on a file that is already encoded as
+   Buckwalter.
+
+*  The features used by the SVM classifiers have been largely changed
+   to reflect better use and understanding of the underlying morphology.
+   The new SVM CLASSIFERS can now include: asp (aspect), cas (case), enc0
+   (enclitic), gen (gender), mod (mood), num (number), per (person), pos 
+   (part-of-speech), prc0 (proclitics: Al, lA, mA), prc1 (proclitic 
+   'prepostitions'), prc2 (proclitic 'conjunctions'), prc3 (proclitic A), 
+   stt (state), and vox (voice).
+
+*  The Aragen code that previously was responsible for generating 
+   analyses for words has been replaced with a new suite called ALMOR.
+   ALMOR handles generation and analysis for Arabic morphology, and corrects
+   many problems of the older code.  ALMOR works with morphological databases
+   that can be derived from BAMA or SAMA (BAMA's successor).
+
+*  The TOKAN code as been refractored to make better use of libraries. In
+   addition, the TOKAN_SCHEMEs used have been changed to allow more
+   versatility; users can define the information to present and the form
+   that information takes separately. In addition, mulitple forms can be 
+   presented for each word, delimited by a configurable characters.  For
+   convenience, several common TOKAN schemes have been defined with
+   simple aliases.
+
+*  We've added an INSTALL.pl script that will help new users configure their
+   systems for using MADA. It will verify the presence of the required
+   third-party software, the correctness of the PERL5LIB path variable,
+   create a template.madaconfig file, and run a simple test of the system.
+
+*  As a convenience feature, users can now specify multiple TOKAN
+   schemes to TOKAN in a "tokan.schemes" file; TOKAN will then apply each 
+   of these schemes to an input MADA file and create a unique output file 
+   for each.  The output is equivalent of running TOKAN once for each
+   scheme.
+
+*  As a convenience feature, a new configuration variable COMPRESS_OUTPUTS
+   has been added.  If set to "YES", the main MADA+TOKAN script will 
+   gzip any output files that MADA and TOKAN produce before completing.
+
+*  If the variable CLASSIFERS is not specified in the configuration file 
+   or command line, it now defaults to a list containing only Part-of-Speech 
+   (pos), rather than all features.
+
+*  The .mada file format has been changed. The new format has analyses that
+   list each feature and its associated value in "Feature:Value" pairs,
+   explicitly.  This change makes the file more human-readable and requires
+   less computation to process.
+
+*  The configuration variable SEPARATENUMBERS is no longer needed; SEPARATEPUNCT
+   is used to control both the whitespace separation of punctuation and numbers.  
+   If present in a configuration file, SEPARATENUMBERS will be ignored.
+
+*  The configuration variable Y_ALTER is no longer needed. This option
+   is implictly handled by the new morpholgical analyzer. If this variable
+   is present in the configuration file, it will be ignored.
+
+*  The configuration variable SVM_FORMAT_MODE is no longer needed. This option
+   is was deemed unnecessary. If this variable is present in the 
+   configuration file, it will be ignored.
+
+*  The configuration variable BAMA_DATABASES is no longer needed and
+   will be ignored if present in a configuration file.  Its function is
+   replaced with the new ALMOR_DATABASE configuration variable.
+
+*  The configuration variable INSERT_SENTENCE_ID_COMMENT has been renamed
+   SENTENCE_IDS for clarity. It still takes values of YES or NO, and indicates
+   whether the first word of each input sentence should be considered
+   a sentence ID that should not be processed.
+
+*  The configuration variable SVM_TRAIN_DICT has been removed, as it was
+   no longer necessary. It will be ignored if present in a configuration file.
+
+*  The configuration variable ARBITRARY_TIE_BREAKING has been replaced with the 
+   variable TIE_BREAKING.  The new variable can accept 3 possible values:  none,
+   random, and arbitrary.  In the event that more than one analysis has the same
+   top score, this variable controls which analysis will be selected as the correct
+   one by MADA.  "arbitrary" will always pick the first one the list of top
+   scorers.  "random" will pick a random scorer.  "none" will label all the top
+   scorers with "*" labels.
+
+*  The configuration variable PRINT_ANALYSES has been added to control the size
+   the output file of MADA (.mada file).  It will take a value of "all", "stars", 
+   or a number.  If set to "all", all the analyses generated by the morphological
+   analyzer will be included in the .mada file, regardless of score. This is the 
+   default option.  If set to "stars", only the selected (starred) analyses will
+   be printed to the .mada file; this is the most space-saving option. Finally,
+   the user can specify a number instead; the number is the count of the top scores
+   to be included. For example, if PRINT_ANALYSES is set to 3, the top three
+   scores for each word will be found, and only analyses with thosescores will be
+   printed. The number of analyses that are printed may be greater than 3 (in this
+   case), because there may be tie scores.  This number option will allow users
+   to retain a certain number of analyses for examination without needing to retain
+   the entire list.  Most users, especially if interested only in TOKAN output,
+   will not need to use anything but "stars".
+
+*  Any blank lines (or lines consisting of only whitespace) found
+   in the input file will be marked in the .ma and .mada files
+   with a ";;; BLANK-LINE" comment for clarity. Thus, a blank line will be noted
+   in a .ma or .mada file as such:
+
+     --------------
+     ;;; SENTENCE 
+     ;;; BLANK-LINE
+     --------------
+     SENTENCE BREAK
+     --------------
+
+   In TOKAN outputs, the corresponding lines will appear as blank lines.
+
+
+*  The unigramdiac and unigramlex features have been removed. The unigramlex
+   feature was not necessary when the ngramlex feature is used.  The unigramdiac
+   feature has been replaced with a ngramdiac, allowing ngram orders up to 5
+   to be used instead.  The order of the ngramlex and ngramdiac features 
+   can be set separately, using the configuration variables LEX_NGRAM_ORDER
+   and DIAC_NGRAM_ORDER, respectively. Tests have shown that Ngram orders of
+   4 and 5, respectively, work well, so they are the defaults.
+
+*  The analyzer can optionally produce additional analyses to those produced 
+   by the lexicon examination. These backoff analyses can be restricted to 
+   noun_prop or all analyses, and can be included every time, never, or
+   only when no lexicon analyses are produced. This behavior is controlled
+   by the MORPH_BACKOFF configuration variable.
+
+*  To replace the old "isdefault" feature, a new feature ("notbackoff") can
+   be activated to get a little more weight to analyses that were not
+   generated by the backoff process.
+
+*  The old STEM-ORTHONORM optional step has been removed for the time being;
+   this feature was meant to help offer alternate spellings for certain words.  
+   It has been removed until its utility in conjunction with the other changes 
+   in MADA 3.0 can be more fully evaluated; in future versions this functionality 
+   will likely be built directly into ALMOR.
+
+*  Extended the MADATools and MADAWord library modules to enhance 
+   functionality.
+
+*  Adjusted MADA-evaluate.pl to be consistent with evaluation method
+   used in previous to MADA-3.0. Most users will never need to use
+   MADA-evalute.pl, unless they want to compare two MADA outputs
+   using different configurations.
+
+*  The previously included Java GUI utility that would allow users to view
+   the contents of a MADA file has been removed while we adjust it to 
+   conform to the new file formats.
+
+
+------------------------------------------------------------------------------
+The following are differences in MADA 2.32 as compared to MADA 2.31:
+
+*  Corrected a bug that causes TOKAN to not mark s+ tokens with a BIES POS
+   when -TAGBIES is active.  s+ tokens now get "RP" as BIES POS
+
+*  Corrected a bug in TOKAN that produced improper output when the MORPH
+   scheme variable was selected.
+
+*  Setting the configuration variable REMOVE_MA_FILE to YES will now also
+   remove the temporary .ngram file.
+
+
+------------------------------------------------------------------------------
+The following are differnces in MADA 2.31 as compared to MADA 2.3:
+
+*  Added a threshold limit to the spelling alternative generation section of
+   Aragen, so that extended, improper words like 'hAAAAAAAAAAm' do not cause
+   memory leaks that lead to script failure.
+
+*  Corrected a bug in the included ArabicTokenizer.Code.pl script that was causing
+   commas to be converted incorrectly
+
+*  Corrected a bug that would yield warning messages if ngramlex was not 
+   included as a feature.
+
+*  Corrected a bug in the readMADAStars() library function so that the 
+   storage of the original analyses would be updated properly.
+
+------------------------------------------------------------------------------
+The following are differnces in MADA 2.3 as compared to MADA 2.12:
+
+*  We've discovered that SVMTools version 1.3 has a bug which will cause it to 
+   fail if called using perl version 5.10.0, as opposed to perl 5.8.8. The 
+   SVMTools team has been alerted to the problem, and have promised an update 
+   soon. In the meantime, we've added a new configuration variable 
+   (PERL_EXECUTABLE), which will allow you to set the version of perl MADA 
+   will use internally. We recommend setting this to the location of the perl 
+   version 5.8.8 on your system.
+
+   Unfortunately, if you've run MADA with perl 5.10, your data will be 
+   flawed. MADA will still produce an output file, but the analysis scoring 
+   will be computed without the benefit of the SVM feature predictions, and 
+   will thus be poor. You can tell if a MADA output file is flawed by looking 
+   at the line that follows each ";;WORD" line in the file. If the line is:
+
+   ;;MADA: WORD
+
+   where WORD is that word's surface form and without any other text on the 
+   line, the file is flawed. A correct file will list each feature MADA was 
+   instructed to build an SVM for and the value of that feature predicted by 
+   the SVMs. For example:
+
+   ;;MADA: tnfY art-NA aspect-IV case-NA clitic-NO conj-NO def-NA mood-I num-SG part-NO per-3 pos-V voice-ACT
+
+   If you find your files are flawed, you will need to re-run the data through 
+   MADA-2.2, using Perl 5.8.
+
+*  We've adjusted the format of printed output of the .mada file to match that 
+   of the .ma files output by the morphological analyzer. The analysis lines 
+   will be identical, except for the included scores and *|^|_ labels.  This 
+   fixes an issue with TOKAN not correctly producing an accurate tokenization 
+   of s+, Al+ and others in some TOKAN
+   schemes.
+
+*  The MADA output files (*.mada) will now indicate which version of MADA 
+   produced them in the header, and will indicate when the file was created.
+
+*  The automatic punctuation and number separation has been modified to 
+   correctly split puncutation and include other marks.
+
+*  Corrected a progress report error where the number of words processed by 
+   MADA in the analysis selection phases was overreported by a factor of ten. 
+   This error does not effect the MADA output file, .mada.
+
+*  Selecting REMOVE_MA_FILE=YES in a configuration file or command line will 
+   now allow remove the *.ma.svmt.classified file. The information in this 
+   file is duplicated in every ";;MADA [word] [feature-value list]" line in 
+   the *.mada output file.
+
+*  A few other minor bug fixes and cosmetic changes.
+
+
+------------------------------------------------------------------------------
+
+The following are differences in MADA 2.12 as compared to MADA 2.11:
+
+*  We've corrected errors the in morphological analyzer related to words 
+   ending in 'Y' or 'y'
+
+*  We've added a new variable to the configuration (Y_ALTER); if set to "YES", 
+   MADA will produce additional analyses for words ending in "Y" or "y", to 
+   allow for a common mispelling. If set to "NO", the spelling is assumed to 
+   be correct. The default behaviour is "NO".
+
+
+------------------------------------------------------------------------------
+
+The following are differences in MADA 2.11 as compared to MADA 2.1:
+
+*  We've added a memory structure to improve the speed of the morph analysis 
+   and TOKAN sections.
+
+------------------------------------------------------------------------------
+
+The following are differences in MADA 2.1 as compared to MADA 2.0:
+
+*  We've added a few options in regards to the handling of NO-ANALYSIS words. 
+   There is a new configuration variable (MORPH_BACKOFF) which can take five 
+   possible values (none, noan-prop, noan-all, add-all, add-prop). If not set 
+   to "none", MADA will attempt to generate additional analysis during the 
+   morphological analysis step. This should help to generate more plausible 
+   analyses in the case of NO-ANALYSIS terms. See the generic.madaconfig file 
+   for details.
+
+*  Minor bug fixes, including better handling for "sun" and "moon" characters 
+   and A -> | spelling error correction.
+
+
+
+------------------------------------------------------------------------------
+
+The following are differences in MADA 2.0 as compared to MADA 1.8.2.1:
+
+* The entire setup of the MADA scripts has been refactored, with crucial or
+  repeatedly used code placed into libraries. This move allows us to 
+  make adjustments to the MADA code more easily and quickly, and should 
+  shorten the amount of time it takes to issue patches as they are needed.
+
+* The MADA combiner which ranks potential word analyses has been improved. The
+  combiner can now accept weights on the features it uses to score analyses.
+  We have generated a few sets of feature weights that tune the combiner to
+  emphasize different aspects, such as correct lexeme choice, correct 
+  correct part-of-speech, or best overall correctness. Users can also now 
+  generate and use their own weight sets. Using properly tuned weights
+  improves the accuracy of the MADA selection.
+
+* As an additional feature, MADA can now incorporate higher-order (>1) ngram
+  modeling. At present, this has only been applied to the lexeme choice. The
+  use of this feature also requires the presence of SRI's ngram tool 'disambig'
+  somewhere on the user's system. Using this feature improves MADA's accuracy;
+  this feature may be turned off if desired.
+
+  The SRILM library can be downloaded freely from:
+   http://www.speech.sri.com/projects/srilm/download.html
+
+* With the addition of the higher-order ngram lexeme modeling and the feature
+  weights system, some older features of MADA have been reassigned. Unigram
+  models of the lexeme and surface diacritic word forms are now full features
+  in the code, rather than just being used when tie scores were encountered.
+  Spellmatch (which was previously referred to in the documentation as 
+  WORD_COMP_MODE) is also now a full feature.
+
+* All of the scripts can now operate on gzipped input files without having
+  to have them unzipped prior to running MADA.
+
+* We have added a few supplementary scripts; these scripts handle simple
+  yet common tasks, such as pulling sentences from a .mada file. These 
+  scripts are not part of the MADA suite, but users may find them useful
+  to have.
+
+* Every script in MADA can now take (in its command line arguments) any 
+  variable that is listed in the configuration file. This will allow users
+  to override any or all variables listed in the configuration file from
+  run to run.
+
+* The standard configuration files have been altered somewhat in response
+  to the refactoring. New variables were introduced and some existing
+  variables were eliminated. Older configuration files may need to be 
+  replaced (and re-customized) with the newer ones provided in this release.
+
+* The format of the word analyses has changed slightly to include additional
+  information. For example, for analyses in which the feature 'case' has a
+  value of 'NA', 'CASE:NA' will appear to make the value explicit.
+
+* By default, now some of the temporary files that MADA produces (*.backlex,
+  *.svmt, *.ma) are deleted after they are no longer used, in order to reduce 
+  file clutter. These deletions can be turned of with the appropriate
+  configuration file variables.
+
+* By default, the variables SEPARATENUMBERS and SEPARATEPUNCT are turned off
+  in the configuration file. This will help to prevent unintentional 
+  misalignments and tokenizations.
+
+
+------------------------------------------------------------------------------
+
+The following are differences in MADA 1.8.2.1 as compared to MADA 1.8.2:
+
+* Fixed a bug where in a word marked as @@LAT@@ would be tokenized if
+  it also contained a digit or punctuation mark.
+
+

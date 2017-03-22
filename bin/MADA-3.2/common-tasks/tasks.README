@@ -1,0 +1,19 @@
+The files in this directory are utility scripts.
+They are mostly meant to be run on a *.mada file (the
+output of MADA) and usually involve extracting
+specific information from the *.mada file.
+
+Most make use of the MADATools and MADAWord libraries.
+
+Except for clean-utf8.pl and tagEnglish.pl, you can 
+see the usage information for each script by typing 
+
+  "perl <script name>" 
+
+with no other arguments.
+
+
+Each script has a description block within the file
+that describes what it does in detail; they are also
+described in the MADA+TOKAN manual.
+

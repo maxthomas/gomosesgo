@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kolo/xmlrpc"
-	"github.com/uber-go/zap"
+	"go.uber.org/zap"
 )
 
 var (
@@ -17,17 +17,20 @@ var (
 	debugMode  = flag.Bool("debug", false, "Run in debug mode")
 	maxConns   = flag.Int("maxConns", 12, "Maximum number of simultaneous connections to allow")
 	port       = flag.Int("port", 8080, "Default port to listen on")
-
-	// logging configuration
-	log = zap.New(zap.NewJSONEncoder())
+	log        *zap.Logger
 )
 
 func zapLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		t := time.Now()
 		c.Next()
-		log.Info("Request Handled", zap.Int("status", c.Writer.Status()), zap.Duration("duration", time.Since(t)),
-			zap.String("method", c.Request.Method), zap.String("request", c.Request.RequestURI), zap.String("module", "route"), zap.Object("errors", c.Errors.Errors()))
+		log.Info("Request Handled",
+			zap.Int("status", c.Writer.Status()),
+			zap.Duration("duration", time.Since(t)),
+			zap.String("method", c.Request.Method),
+			zap.String("request", c.Request.RequestURI),
+			zap.String("module", "route"),
+			zap.Strings("errors", c.Errors.Errors()))
 	}
 }
 
@@ -77,9 +80,11 @@ func main() {
 	// set up logging
 	zapOptions := []zap.Option{zap.Fields(zap.String("app", "gomosesgo"))}
 	if *verbose {
-		zapOptions = append(zapOptions, zap.DebugLevel)
+		log, _ = zap.NewDevelopment(zapOptions...)
+	} else {
+		log, _ = zap.NewProduction(zapOptions...)
 	}
-	log = zap.New(zap.NewJSONEncoder(), zapOptions...)
+
 	mainLog := log.With(zap.String("module", "main"))
 
 	if *mosesURI == "" || *scriptPath == "" {

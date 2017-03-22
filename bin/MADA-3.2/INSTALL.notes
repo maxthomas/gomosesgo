@@ -1,0 +1,9 @@
+perl INSTALL.pl madahome=MADAHOME srihome=SRIHOME svmhome=SVMTOOLSHOME \\
+                   xamadir=XAMADIR xamaversion=SAMA3.1
+
+perl INSTALL.pl madahome=/tools/MADA/MADA-3.2
+                srihome=/tools/SRILM/SRILM-1.6.0
+                svmhome=/tools/SVMTool/SVMTool-1.3.1
+                xamadir=/tools/LDC/SAMA-3.1/lib/SAMA_DB/v3_1
+                xamaversion=SAMA3.1
+

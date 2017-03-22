@@ -1,11 +1,19 @@
 #!/usr/bin/env perl
 
-#zone/wall tokenizer
+# Remix NRC's fastMada processing to be more friendly for our Moses
+# setup
+# Hax to allow <wall /> tags to pass through
+
+# SCREAM dep locations
+#use lib '/tools/MADA/MADA-3.2';
+#use lib '/tools/NRC';
 
 use strict;
 use utf8;
 use FindBin qw($RealBin);
 use Time::HiRes qw ( time );
+#use MADA::MADATools;
+#use JSON;
 
 #no buffering
 $|++;
