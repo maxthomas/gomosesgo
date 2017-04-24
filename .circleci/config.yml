@@ -20,9 +20,9 @@ jobs:
 deployment:
   deploy-tags:
     tag: /.*/
-    commands: echo 'hi there, deployment'
-
-      # BUILD_VERSION=$(git describe --tags)
-      # echo $BUILD_VERSION
-      # gox -osarch "linux/amd64" -ldflags "-X main.Version=$BUILD_VERSION" -output "dist/gomosesgo_{{.OS}}_{{.Arch}}"
-      # ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace `git describe --tags` dist/
+    command: |
+      echo 'deployment starting'
+      BUILD_VERSION=$(git describe --tags)
+      echo $BUILD_VERSION
+      gox -osarch "linux/amd64" -ldflags "-X main.Version=$BUILD_VERSION" -output "dist/gomosesgo_{{.OS}}_{{.Arch}}"
+      ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace `git describe --tags` dist/
