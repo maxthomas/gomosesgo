@@ -1,0 +1,19 @@
+version: 2
+jobs:
+  build:
+    working_directory: /go/src/github.com/maxthomas/gomosesgo
+    docker:
+      - image: maxthomas/go-gox-ghr:latest
+    steps:
+      - checkout
+
+      - run:
+          name: Glide update for vendor
+          command: glide up
+      - run:
+          name: Push binary to release page
+          command: |
+            BUILD_VERSION=$(git describe --tags)
+            echo $BUILD_VERSION
+            gox -osarch "linux/amd64" -ldflags "-X main.Version=$BUILD_VERSION" -output "dist/gomosesgo_{{.OS}}_{{.Arch}}"
+            ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace `git describe --tags` dist/
