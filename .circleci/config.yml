@@ -3,11 +3,16 @@ jobs:
   build:
     working_directory: /go/src/github.com/maxthomas/gomosesgo
     docker:
-      - image: maxthomas/gomosesgo-primary:0.0.1
+      - image: maxthomas/go-gox-ghr:latest
     steps:
       - checkout
-      - BUILD_DATE=$(date -u '+%Y/%m/%d %H:%M:%S')
-      - BUILD_VERSION=$(git describe --tags)
-      - glide up
-      - gox -ldflags "-X main.Version $BUILD_VERSION -X main.BuildDate $BUILD_DATE" -output "dist/ncd_{{.OS}}_{{.Arch}}"
-      - ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace `git describe --tags` dist/
+      - run:
+        name: Glide update for vendor
+        command: glide up
+      - run:
+        name: Push binary to release page
+        command: |
+          export BUILD_DATE=$(date -u '+%Y/%m/%d %H:%M:%S')
+          export BUILD_VERSION=$(git describe --tags)
+          gox -ldflags "-X main.Version $BUILD_VERSION -X main.BuildDate $BUILD_DATE" -output "dist/ncd_{{.OS}}_{{.Arch}}"
+          ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace `git describe --tags` dist/
