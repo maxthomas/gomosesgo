@@ -58,7 +58,7 @@ func routeTranslate(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{
 		"status":   "ok",
-		"version":  "1.1.2pre",
+		"version":  "1.2.0",
 		"text":     finalSrc,
 		"hashtags": hashtags,
 	})

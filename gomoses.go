@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"os"
 	"strconv"
 	"time"
 
@@ -11,11 +12,10 @@ import (
 )
 
 var (
-	mosesURI   = flag.String("moses", "", "URI of Moses RPC")
-	scriptPath = flag.String("scripts", "", "Path to [pre/post]-processing scripts")
+	mosesURI   = flag.String("moses", os.Getenv("MOSES_RPC_URI"), "URI of Moses RPC")
+	scriptPath = flag.String("scripts", "bin/", "Path to [pre/post]-processing scripts")
 	verbose    = flag.Bool("verbose", false, "Turn on verbose logging")
-	debugMode  = flag.Bool("debug", false, "Run in debug mode")
-	maxConns   = flag.Int("maxConns", 12, "Maximum number of simultaneous connections to allow")
+	maxConns   = flag.Int("maxConns", 24, "Maximum number of simultaneous connections to allow")
 	port       = flag.Int("port", 8080, "Default port to listen on")
 	log        *zap.Logger
 )
@@ -55,10 +55,8 @@ func maxAllowed(n int) gin.HandlerFunc {
 	}
 }
 
-func getGinEngine(client *RPCTranslate, tf *TranslationTransformer, maxConns int, debug bool) (r *gin.Engine) {
-	if !debug {
-		gin.SetMode(gin.ReleaseMode)
-	}
+func getGinEngine(client *RPCTranslate, tf *TranslationTransformer, maxConns int) (r *gin.Engine) {
+
 	r = gin.New()
 	r.Use(gin.Recovery())
 	r.Use(zapLogger())
@@ -102,7 +100,7 @@ func main() {
 
 	mainLog.Info("Starting server")
 	rpc := RPCTranslate{client}
-	r := getGinEngine(&rpc, &tf, *maxConns, *debugMode)
+	r := getGinEngine(&rpc, &tf, *maxConns)
 	portStr := strconv.Itoa(*port)
 	mainLog.Info("Backend started on port" + portStr)
 	r.Run(":" + portStr) // listen and server on 0.0.0.0:8080
