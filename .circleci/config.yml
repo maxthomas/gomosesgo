@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: /go/src/github.com/maxthomas/gomosesgo
     docker:
-      - image: maxthomas/go-gox-ghr:latest
+      - image: maxthomas/gggg:latest
     steps:
       - checkout
 
