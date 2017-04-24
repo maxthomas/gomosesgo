@@ -20,9 +20,12 @@ jobs:
 deployment:
   deploy-tags:
     tag: /.*/
-    command: |
+    commands: |
       echo 'deployment starting'
-      BUILD_VERSION=$(git describe --tags)
-      echo $BUILD_VERSION
-      gox -osarch "linux/amd64" -ldflags "-X main.Version=$BUILD_VERSION" -output "dist/gomosesgo_{{.OS}}_{{.Arch}}"
-      ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace `git describe --tags` dist/
+
+      name: Push binary to release page via Deployment section
+      command: |
+        BUILD_VERSION=$(git describe --tags)
+        echo $BUILD_VERSION
+        gox -osarch "linux/amd64" -ldflags "-X main.Version=$BUILD_VERSION" -output "dist/gomosesgo_{{.OS}}_{{.Arch}}"
+        ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace `git describe --tags` dist/
