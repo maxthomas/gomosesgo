@@ -1,13 +1,24 @@
 language: go
 go:
 - tip
-install:
+before_install:
 - mkdir -p $GOPATH/bin
-- curl https://glide.sh/get | sh
+- go get github.com/Masterminds/glide
+- which python3.5
+- which glide
+addons:
+  apt:
+    sources:
+      - deadsnakes # source required so it finds the package definition below
+    packages:
+      - python3.5
+install:
 - glide up
 - go get golang.org/x/tools/cmd/cover
 - go get github.com/mitchellh/gox
+- python3.5 mock-server.py &
 script:
+- go test -cover -race -cpu 1,2,4 -timeout=15000ms
 - gox -osarch "linux/amd64" -output "dist/gomosesgo_{{.OS}}_{{.Arch}}" .
 deploy:
   provider: releases
