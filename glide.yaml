@@ -1,0 +1,8 @@
+package: github.com/maxthomas/gomosesgo
+import:
+- package: github.com/gin-gonic/gin
+- package: github.com/kolo/xmlrpc
+- package: github.com/uber-go/zap
+- package: golang.org/x/text
+  subpackages:
+  - transform
