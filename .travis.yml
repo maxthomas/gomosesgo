@@ -9,9 +9,9 @@ before_install:
 addons:
   apt:
     sources:
-      - deadsnakes # source required so it finds the package definition below
+    - deadsnakes
     packages:
-      - python3.5
+    - python3.5
 install:
 - glide up
 - go get golang.org/x/tools/cmd/cover
@@ -23,11 +23,11 @@ script:
 deploy:
   provider: releases
   api_key:
-    secure: MN+77oqfxr2Wy7xvdS1EWCJeKt5FDjXqwZ3cwcM2TxOxfxpxMKytzSeiB8I60VOqu/hED67/6vLBAuGrgF9BdgEwx6AB6oBh9ws3wSppCjYAQvIhf79uktBjfj+8ArI7Yj2H7SqBWgyhif98uwui9vUUEVAe2qqukYXWHEM2jevTQkb6Kto8z1enNo9qooMDbaTN5+gXCttCnr7PiP4aKT0i65sJOFB5HZmvk69qo/UI1xHUMbBYG+AazjS9TNDptTBQD6Nu2/4R8yPE2r4830lhxLHEGW6pQ/amMPQoTEbuoQMrqdoeik9MN1vE6i5iW7aU9QvYCzWpvMyVyx4uYYUnfalhJe0+9Bl6MOA6AsFf1twKLYe+XVKVMfgBI0iDMuf28nW1S77hiSNDhi2yzWpzV+qLcr5QT3L+dtDVBfbK+o0n4xIScQ4G5Tp0Nu6yfoKJx/0fCAVW3iFyWyXQpvXh2oiF6yBL27Z2F3lCqEftmjsm9J5j9biqoYulyfOJ/1eeUsoKHjRv7ZKDbaft5BdwLgKxf9h3L4GhOj8Wj+1mrkqdXRlVRSBszpKx3xrt1z35RVXWpSNnh8nF5n6D26RrRPrkOkPm6FsOaJwqwO2KQVa38l7IY5dGs5sGSqxi9agKPuBztBWntwqZ62H5cx6gKZsou0zYipxK4Cm3H98=
-  file:
-  - dist/gomosesgo_linux_amd64
+    secure: rRPdCGGV4Uij+SEKdgqJxVRDYZlZFtoOr4EB063EIBNyo1EiA+twqkWatBdBKpUGd+xO/b2zjGWvUpbXD0mm1iBcmhzrgUSZHv9Xh2KY5vjWoAwWnZUBAg3YF1fEOj7fKPUde9faiRYLwSxoQd9OLQSP4pTjtVyxQZmqrczN/1jWU4aDCM12BIc+Ty8Gj07KMkizbkddInKavvPNV2HTHlW80c8f7Y+28Owm4a5PZWHrL8SMD3PjYwKud/J7bAbknRJeopMEGSaFbqJxI4+U9alll6CI8MKZ5W/zaMMfNNVFIfhdEfi9ccAR2uRDG7QEAZ+GcwNR5mSTu3nqdM1qlofc/x9ISOCxFmAcOP8m841bKFYPOg1K6yJIDFSJ30Rk4v+3aY4h22oGYNGYPQKn4F0c8d97Z3kwYAII/g4MACaEQomC56YPd+xi9Bd9ACwegfcXkA3TFCm1twDJZVodN05Oan0aVhr4nzaHRjvk9pAUzQiouOWhl057hMjuBu839KBqM40bL0uExK8BFTMPDlfE6Fu598ta5Xb5n4PDJAU3DKyneAzQ4Lewv5UxaDJBU72f4g/Dmn9RnTztZiTFvkCc2CKWQxXhXhpwkhUPmaWyEK4fGAn9qeTgKYZ+73bSB1tlBl755p7kQKxReJ3RD8ofw+A73d6dbZIRflzloKE=
+  file: dist/gomosesgo_linux_amd64
   skip_cleanup: true
   on:
+    repo: qntfy/gomosesgo
     tags: true
 env:
   global:
